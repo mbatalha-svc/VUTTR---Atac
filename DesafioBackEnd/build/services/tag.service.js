@@ -22,6 +22,10 @@ class TagService {
             const tags = yield this.tagRepository.findOne(id);
             return tags;
         });
+        this.getTagByName = (name) => __awaiter(this, void 0, void 0, function* () {
+            const tags = yield this.tagRepository.findOne({ where: { name: name } });
+            return tags;
+        });
         this.create = (tag) => __awaiter(this, void 0, void 0, function* () {
             const newTag = yield this.tagRepository.save(tag);
             return newTag;
