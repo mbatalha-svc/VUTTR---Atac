@@ -23,6 +23,12 @@ export class TagController {
 		
 		res.send(tag );
 	}
+	public getTagByName = async (req: Request, res: Response, next: NextFunction) => {
+		const name = req['params']['name'];
+		const tag = await this.tagService.getTagByName(name);
+		
+		res.send(tag );
+	}
 	public create = async (req: Request, res: Response) => {
 		const tag = req['body'] as Tag;
 		const newTag = await this.tagService.create(tag);
@@ -52,6 +58,10 @@ export class TagController {
 			.post(this.create);
 		this.router.route('/:id')
 			.get(this.getTagById)
+			.put(this.update)
+			.delete(this.delete);
+		this.router.route('/name/:name')
+			.get(this.getTagByName)
 			.put(this.update)
 			.delete(this.delete);
 	}

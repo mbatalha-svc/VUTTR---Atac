@@ -17,6 +17,10 @@ export class TagService{
 		const tags = await this.tagRepository.findOne(id);
 		return tags;
 	}
+	public getTagByName = async (name: string) => {
+		const tags = await this.tagRepository.findOne({where:{name:name}});
+		return tags;
+	}
 
 	public create = async (tag: Tag) => {
 		const newTag = await this.tagRepository.save(tag);
