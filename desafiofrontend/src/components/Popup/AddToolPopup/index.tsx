@@ -51,7 +51,7 @@ const AddToolPopup = (props:IAddToolPopupProps) => {
                     console.log(`SUCESSO AO INSERIR TAG=${tag.name}`);
                 })
         });
-
+        
         axios.post("http://localhost:3000/api/tools/", values)
             .then((response)=>{
                 props.setTrigger(false);

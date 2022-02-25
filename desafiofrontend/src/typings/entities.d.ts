@@ -1,6 +1,6 @@
 type TagType  = {
     id?: number;
-    name: string;
+    name?: string;
 };
 type ToolType = {
     id?: number;
