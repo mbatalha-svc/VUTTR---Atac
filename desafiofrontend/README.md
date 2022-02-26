@@ -5,3 +5,5 @@ Requisitos:
 
 Run:
     - npm start
+
+    -http://localhost:3001/

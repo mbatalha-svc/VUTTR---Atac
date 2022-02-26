@@ -16,6 +16,7 @@ Outras dependências:
 
 Run:
     - node ./build/server.js
+    - http://localhost:3000/
 
 OBS:
     * Caso a máquina já esteja usando a porta 5432, rodando o postgres por exemplo, não vai ser possível escutar em tal porta no Docker. Faz-se necessário finalizar o processo que utiliza essa porta para executar normalmente.
