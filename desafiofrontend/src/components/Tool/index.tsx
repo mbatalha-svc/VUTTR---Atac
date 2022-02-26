@@ -11,9 +11,7 @@ interface IToolProps {
 }
 
 const checkDelete = (async (id:any, e:any, confirmDelete:boolean)=>{
-  console.log(`DENTRO DO CHECK DELETE: ${confirmDelete}`)
   if(confirmDelete) {
-    console.log('tentando deletar' + id);
     axios
     .delete(`http://localhost:3000/api/tools/${id}`)
     .then(response => {
@@ -29,47 +27,46 @@ const Tool = (props: IToolProps) => {
   const {id, title, link, description, tags} = props.toolData; 
 
   return (
-    <div>
-      <h1>{title}{id}</h1>
-      <div className="main-input">
-        <div className="input-icons"id="remove-btn">
-          <i className = "fa fa-remove icon"> </i>
-            <button onClick={() => {
-              setPopupConfirmation(true);
-            }} className="input-field" id="removebutton" name="removebutton">remove</button>
-            <ConfirmationPopup 
-              title="Remove tool" 
-              text='Are you sure you want to remove?' 
-              confirmText="Yes, remove"
-              trigger = {popupConfirmation}
-              setTrigger = { setPopupConfirmation}
-              setConfirmation = { setConfirmDelete }    
-            />
-            { (() => {
-                if(confirmDelete){
-                  console.log(confirmDelete);
-                  
-                  //(() => setConfirmDelete(false))();
-                  console.log(confirmDelete); 
-                  checkDelete(id, props.e, confirmDelete);
-                }
-              })()
-            }
+    <div className="Tool">
+      <div className="tool-top">
+        <div className="tool-title">
+        <a href = {link} target="_blank"> <h2>{title}{id}</h2> </a>
+          
+        </div>
 
-            { /**checkDelete(id, props.e, confirmDelete)*/ }
-              
+        <div className="main-input remove-btn">
+          <div className="input-icons"id="remove-btn">
+            <i className = "fa fa-remove icon"> </i>
+              <button onClick={() => {
+                setPopupConfirmation(true);
+              }} className="input-field" id="removebutton" name="removebutton">remove</button>
+              <ConfirmationPopup 
+                title="Remove tool" 
+                text='Are you sure you want to remove?' 
+                confirmText="Yes, remove"
+                trigger = {popupConfirmation}
+                setTrigger = { setPopupConfirmation}
+                setConfirmation = { setConfirmDelete }    
+              />
+              { (() => {
+                  if(confirmDelete){
+                    checkDelete(id, props.e, confirmDelete);
+                  }
+                })()
+              }
+                
+          </div>
         </div>
       </div>
-      <a href = {link} target="_blank"> {link} </a>
-      <p> {description} </p>
-      <hr/>
+      <div className="tool-desc">   
+        <p> {description} </p>
+      </div>
       {
         tags?.length > 0 
         &&
-        <div>
-        Tags<hr/>
+        <div className='tags'>
           {tags.map((tag) => (
-            <div key={tag.id}> {tag.name}</div>
+            <div className="tag" key={tag.id}> #{tag.name}</div>
             ))}
         </div>
       }

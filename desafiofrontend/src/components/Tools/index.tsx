@@ -24,7 +24,7 @@ const hasSearchTerm = (text: string, searchArray:string[]) => {
 
 const filterSearchTag = (tags: TagType[], searchArray:string[]) => {
     const found = (tags.filter((tag) => {
-      if(hasSearchTerm(tag.name, searchArray)) {
+      if(tag.name!== undefined && hasSearchTerm(tag.name, searchArray)) {
         return tag;
       }
     }));

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import Popup from "..";
 
 interface IAddToolPopupProps {
@@ -9,6 +9,7 @@ interface IAddToolPopupProps {
     confirmText?:string,
     trigger:boolean,
     setTrigger:any,
+    e: any
 }
 
 const initialValue:ToolType = {
@@ -19,42 +20,89 @@ const initialValue:ToolType = {
 }
 
 const AddToolPopup = (props:IAddToolPopupProps) => {
-    const [values, setValues] = React.useState(initialValue);
+    const [values, setValues] = React.useState<ToolType>(initialValue);
+    const [tags, setTags] = React.useState<TagType[]>([]);
+
+    useEffect(()=>{
+        console.log(tags);
+    }, [tags]);
 
     function onChange(ev:any) {
         const { name, value } = ev.target;
-        console.log({name, value})
-        if(name=="tags") {
+        if(name==="tags") {
             //Separar texto em palavras
             const tagValues:string[] = value.split(" ").filter(Boolean);
-            let tagObjects:TagType[] = [];
+            var tagObjects:TagType[] = [];
             //inserir palavras na tabela Tag
-            tagValues.map((tagName:string)=>{
-                        tagObjects = [...tagObjects, {name:tagName}]
-                    });
+            tagValues.forEach((tagName:string)=>{
+                        tagObjects = [...tagObjects, {name:tagName}];
+                    });       
             //setValues com a array
             setValues({...values, [name]: tagObjects});
-            console.log(tagObjects);
         } else {
             setValues({...values, [name]: value});
         }
     }
+
+    function uploadTags(tags:TagType[]) {
+        values.tags.forEach(async(tag)=>{
+            axios.get(`http://localhost:3000/api/tags/name/${tag.name}`)
+                .then((getresponse)=>{
+                    console.log(getresponse);
+                    var tagId:TagType = {};
+                    if(getresponse.data===''){
+                        console.log(`NÃO ACHOU A TAG=${tag.name}`);
+                        axios.post("http://localhost:3000/api/tags/", tag)
+                            .then((postresponse)=>{
+                                console.log(`SUCESSO AO INSERIR TAG=${tag.name}`);
+                                (tagId = {id:postresponse.data.id});
+                                
+                                setTags(oldtags => [...oldtags, tagId]);
+                                console.log(tagId);
+                            })
+                            .catch((err)=>{
+                                console.log(`FALHA AO INSERIR TAG=${tag.name}`);
+                            })
+                    } else {
+                        console.log(`ACHOU A TAG=${tag.name}`);
+                        (tagId = {id:getresponse.data.id});
+                        
+                        setTags(oldtags => [...oldtags, tagId]);
+                        console.log(tagId);
+                    }
+                    console.log(tagId);
+                });
+        });
+    }
+    function uploadTools() {
+        console.log(tags);
+    }
     function onSubmit(ev:any) {
         ev.preventDefault();
+
         console.log(values);
-        values.tags.map((tag)=>{
-            axios.post("http://localhost:3000/api/tags/", tag)
+        
+        // Garante que inseriu todas as tags no db
+        uploadTags(values.tags);
+
+        //console.log(tags);
+        //setValues({...values, tags: tagsId});
+
+        values.tags.forEach((tag)=>{
+            axios.get(`http://localhost:3000/api/tags/name/${tag.name}`)
                 .then((response)=>{
-                    console.log(`SUCESSO AO INSERIR TAG=${tag.name}`);
+                    console.log(response);
                 })
                 .catch((err)=>{
-                    console.log(`SUCESSO AO INSERIR TAG=${tag.name}`);
+                    
                 })
         });
         
         axios.post("http://localhost:3000/api/tools/", values)
-            .then((response)=>{
+            .then(async (response)=>{
+                console.log(response);
                 props.setTrigger(false);
+                await props.e();
             })
     }
 

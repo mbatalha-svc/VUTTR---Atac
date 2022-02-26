@@ -18,13 +18,17 @@ export class TagService{
 		return tags;
 	}
 	public getTagByName = async (name: string) => {
-		const tags = await this.tagRepository.findOne({where:{name:name}});
+		const tags = await this.tagRepository.findOne({name:name});
 		return tags;
 	}
 
 	public create = async (tag: Tag) => {
-		const newTag = await this.tagRepository.save(tag);
-		return newTag;
+		try {
+			const newTag = await this.tagRepository.save(tag);
+			return newTag;
+		} catch(err) {
+			return err;
+		}
 	}
 
 	public update = async(tag: Tag, id: number) => {
